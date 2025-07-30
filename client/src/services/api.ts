@@ -103,6 +103,7 @@ export const authAPI = {
   // Upload avatar
   uploadAvatar: async (file: File): Promise<{ profilePicture: string }> => {
     const formData = new FormData();
+    formData.append('avatar', file);
     
     const response = await api.post<ApiResponse<{ profilePicture: string }>>(
       '/auth/upload-avatar',

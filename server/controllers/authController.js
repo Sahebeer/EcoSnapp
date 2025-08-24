@@ -70,8 +70,11 @@ const register = async (req, res) => {
 // @access  Public
 const login = async (req, res) => {
   try {
+    console.log('Login attempt:', { email: req.body.email });
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Login validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
@@ -115,6 +118,7 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(user._id);
+    console.log('Login successful for user:', user.email, 'token generated:', !!token);
 
     // Remove password from response
     user.password = undefined;
@@ -142,7 +146,9 @@ const login = async (req, res) => {
 // @access  Private
 const getMe = async (req, res) => {
   try {
+    console.log('getMe called for user ID:', req.user.id);
     const user = await User.findById(req.user.id);
+    console.log('getMe found user:', user ? user.email : 'not found');
 
     res.json({
       success: true,

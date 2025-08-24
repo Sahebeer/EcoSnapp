@@ -41,13 +41,17 @@ const limiter = rateLimit({
 // Apply rate limiting to all requests
 app.use(limiter);
 
-// Stricter rate limiting for auth routes
+// Stricter rate limiting for auth routes (excluding /me endpoint)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 auth requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 5 : 50, // Higher limit for development
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.'
+  },
+  skip: (req) => {
+    // Skip rate limiting for /me endpoint (token verification)
+    return req.path === '/me';
   }
 });
 

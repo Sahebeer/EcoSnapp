@@ -22,7 +22,7 @@ import {
 import {
   Menu as MenuIcon,
   Dashboard,
-  EcoOutlined,
+  Co2Outlined,
   Leaderboard,
   Person,
   AdminPanelSettings,
@@ -33,7 +33,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const Layout: React.FC = () => {
   const theme = useTheme();
@@ -67,7 +67,7 @@ const Layout: React.FC = () => {
 
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
-    { text: 'My Actions', icon: <EcoOutlined />, path: '/actions' },
+    { text: 'My Actions', icon: <Co2Outlined />, path: '/actions' },
     { text: 'Leaderboard', icon: <Leaderboard />, path: '/leaderboard' },
     { text: 'Profile', icon: <Person />, path: '/profile' },
   ];
@@ -77,19 +77,81 @@ const Layout: React.FC = () => {
   }
 
   const drawer = (
-    <div>
-      <Toolbar>
+    <Box
+      sx={{
+        height: '100%',
+        background: 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255, 165, 0, 0.1) 0%, transparent 50%)
+          `,
+          pointerEvents: 'none',
+        },
+      }}
+    >
+      <Toolbar sx={{ 
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+      }}>
         <Box display="flex" alignItems="center" width="100%">
-          <EcoOutlined color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" noWrap component="div" color="primary" fontWeight="600">
-            EcoImpact
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
+              mr: 2,
+              boxShadow: '0 8px 25px rgba(255, 107, 107, 0.3)',
+              animation: 'pulse 3s ease-in-out infinite',
+              '@keyframes pulse': {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.05)' },
+              },
+            }}
+          >
+            <Co2Outlined sx={{ fontSize: 24, color: 'white' }} />
+          </Box>
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component="div" 
+            sx={{
+              background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: '800',
+              fontSize: '1.5rem',
+              fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            EcoSnap
           </Typography>
         </Box>
       </Toolbar>
-      <Divider />
-      <List>
+      
+      <Divider sx={{ 
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+      }} />
+      
+      <List sx={{ px: 2, py: 3 }}>
         {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
+          <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
             <ListItemButton
               selected={location.pathname === item.path}
               onClick={() => {
@@ -97,25 +159,56 @@ const Layout: React.FC = () => {
                 if (isMobile) setMobileOpen(false);
               }}
               sx={{
+                borderRadius: 3,
+                mx: 0.5,
+                py: 1.5,
+                px: 2,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
+                  background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
                   color: 'white',
+                  boxShadow: '0 8px 25px rgba(255, 107, 107, 0.3)',
                   '&:hover': {
-                    backgroundColor: 'primary.dark',
+                    background: 'linear-gradient(135deg, #ffa500, #ff6b6b)',
+                    transform: 'translateX(5px)',
                   },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
                   },
                 },
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(10px)',
+                  transform: 'translateX(3px)',
+                },
+                '& .MuiListItemIcon-root': {
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  transition: 'color 0.3s ease',
+                },
+                '& .MuiListItemText-primary': {
+                  fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontWeight: location.pathname === item.path ? 600 : 500,
+                  fontSize: '0.95rem',
+                  letterSpacing: '0.2px',
+                },
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text}
+                sx={{
+                  '& .MuiTypography-root': {
+                    color: location.pathname === item.path ? 'white' : 'rgba(255, 255, 255, 0.9)',
+                  },
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </div>
+    </Box>
   );
 
   return (
@@ -126,6 +219,10 @@ const Layout: React.FC = () => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
         }}
       >
         <Toolbar>
@@ -134,12 +231,27 @@ const Layout: React.FC = () => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
+            sx={{ 
+              mr: 2, 
+              display: { md: 'none' },
+              color: 'white',
+            }}
           >
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component="div" 
+            sx={{ 
+              flexGrow: 1, 
+              color: 'white',
+              fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+            }}
+          >
             Welcome back, {user?.firstName}!
           </Typography>
 
@@ -148,15 +260,29 @@ const Layout: React.FC = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: 20,
-              px: 2,
-              py: 0.5,
+              background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
+              borderRadius: 25,
+              px: 2.5,
+              py: 1,
               mr: 2,
+              boxShadow: '0 8px 25px rgba(255, 107, 107, 0.3)',
+              animation: 'pulse 2s ease-in-out infinite',
+              '@keyframes pulse': {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.02)' },
+              },
             }}
           >
-            <EcoOutlined sx={{ mr: 1, fontSize: 20 }} />
-            <Typography variant="body2" fontWeight="600">
+            <Co2Outlined sx={{ mr: 1, fontSize: 18, color: 'white' }} />
+            <Typography 
+              variant="body2" 
+              fontWeight="700" 
+              sx={{ 
+                color: 'white',
+                fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+                fontSize: '0.9rem',
+              }}
+            >
               {user?.totalPoints || 0} pts
             </Typography>
           </Box>
@@ -166,7 +292,14 @@ const Layout: React.FC = () => {
             <Avatar
               alt={user?.fullName || user?.username}
               src={user?.profilePicture}
-              sx={{ width: 40, height: 40 }}
+              sx={{ 
+                width: 42, 
+                height: 42,
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
+                fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+                fontWeight: 600,
+              }}
             >
               {user?.firstName?.[0]?.toUpperCase()}
             </Avatar>
@@ -185,17 +318,47 @@ const Layout: React.FC = () => {
               vertical: 'top',
               horizontal: 'right',
             }}
+            PaperProps={{
+              sx: {
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: 3,
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+                mt: 1,
+              },
+            }}
           >
-            <MenuItem onClick={() => { navigate('/profile'); handleProfileMenuClose(); }}>
+            <MenuItem 
+              onClick={() => { navigate('/profile'); handleProfileMenuClose(); }}
+              sx={{
+                color: 'white',
+                fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+            >
               <ListItemIcon>
-                <Settings fontSize="small" />
+                <Settings fontSize="small" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
               </ListItemIcon>
               Profile Settings
             </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleLogout}>
+            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+            <MenuItem 
+              onClick={handleLogout}
+              sx={{
+                color: 'white',
+                fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'rgba(255, 0, 0, 0.1)',
+                },
+              }}
+            >
               <ListItemIcon>
-                <Logout fontSize="small" />
+                <Logout fontSize="small" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
               </ListItemIcon>
               Logout
             </MenuItem>
@@ -214,11 +377,16 @@ const Layout: React.FC = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: drawerWidth,
+              background: 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+            },
           }}
         >
           {drawer}
@@ -229,7 +397,12 @@ const Layout: React.FC = () => {
           variant="permanent"
           sx={{
             display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: drawerWidth,
+              background: 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+            },
           }}
           open
         >
@@ -242,7 +415,6 @@ const Layout: React.FC = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           width: { md: `calc(100% - ${drawerWidth}px)` },
           mt: '64px', // AppBar height
         }}

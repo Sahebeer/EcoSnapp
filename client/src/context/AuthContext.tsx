@@ -84,23 +84,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const token = localStorage.getItem('token');
         const userData = localStorage.getItem('user');
 
+        console.log('Auth initialization - token:', !!token, 'userData:', !!userData);
+
         if (token && userData) {
           const user = JSON.parse(userData);
           
           // Verify token is still valid by fetching current user
           try {
+            console.log('Verifying token with getMe()...');
             const currentUser = await authAPI.getMe();
+            console.log('Token verified, setting user:', currentUser);
             dispatch({
               type: 'SET_USER',
               payload: { user: currentUser, token }
             });
           } catch (error) {
+            console.error('Token verification failed:', error);
             // Token is invalid, clear storage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             dispatch({ type: 'SET_LOADING', payload: false });
           }
         } else {
+          console.log('No token or userData found, setting loading to false');
           dispatch({ type: 'SET_LOADING', payload: false });
         }
       } catch (error) {
@@ -115,20 +121,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (credentials: LoginCredentials): Promise<void> => {
     try {
+      console.log('Login attempt with credentials:', credentials);
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
 
       const { user, token } = await authAPI.login(credentials);
+      console.log('Login successful, user:', user, 'token:', !!token);
 
       // Store in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+      console.log('Stored in localStorage');
 
       dispatch({
         type: 'SET_USER',
         payload: { user, token }
       });
+      console.log('User state updated');
     } catch (error: any) {
+      console.error('Login error:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Login failed';
       dispatch({ type: 'SET_ERROR', payload: errorMessage });
       throw new Error(errorMessage);
@@ -186,6 +197,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
   };
+
+  // Debug logging for authentication state changes
+  console.log('AuthContext state:', {
+    user: !!state.user,
+    token: !!state.token,
+    isLoading: state.isLoading,
+    isAuthenticated: !!state.user && !!state.token
+  });
 
   return (
     <AuthContext.Provider value={value}>

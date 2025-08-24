@@ -121,7 +121,13 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   success: boolean;
   data: {
-    [key: string]: T[];
+    [key: string]: T[] | {
+      current: number;
+      pages: number;
+      total: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
     pagination: {
       current: number;
       pages: number;

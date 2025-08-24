@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Box, Button, Container } from '@mui/material';
-import { Home, EcoOutlined } from '@mui/icons-material';
+import { Home, Co2Outlined } from '@mui/icons-material';
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const NotFoundPage: React.FC = () => {
         minHeight="100vh"
         textAlign="center"
       >
-        <EcoOutlined sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
+        <Co2Outlined sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
         <Typography variant="h1" color="primary" fontWeight="600" gutterBottom>
           404
         </Typography>

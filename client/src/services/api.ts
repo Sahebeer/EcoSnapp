@@ -19,7 +19,7 @@ import {
 } from '../types';
 
 // API configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Create axios instance
 const api = axios.create({
@@ -72,8 +72,15 @@ const handleApiResponse = <T>(response: AxiosResponse<ApiResponse<T>>): T => {
 export const authAPI = {
   // Login user
   login: async (credentials: LoginCredentials): Promise<{ user: User; token: string }> => {
-    const response = await api.post<AuthResponse>('/auth/login', credentials);
-    return handleApiResponse(response);
+    console.log('login() called with credentials:', credentials);
+    try {
+      const response = await api.post<AuthResponse>('/auth/login', credentials);
+      console.log('login() response:', response.data);
+      return handleApiResponse(response);
+    } catch (error) {
+      console.error('login() error:', error);
+      throw error;
+    }
   },
 
   // Register user
@@ -84,8 +91,15 @@ export const authAPI = {
 
   // Get current user
   getMe: async (): Promise<User> => {
-    const response = await api.get<ApiResponse<User>>('/auth/me');
-    return handleApiResponse(response);
+    console.log('getMe() called, token:', !!localStorage.getItem('token'));
+    try {
+      const response = await api.get<ApiResponse<User>>('/auth/me');
+      console.log('getMe() response:', response.data);
+      return handleApiResponse(response);
+    } catch (error) {
+      console.error('getMe() error:', error);
+      throw error;
+    }
   },
 
   // Update profile
@@ -142,7 +156,11 @@ export const actionsAPI = {
     if (filters.limit) params.append('limit', filters.limit.toString());
 
     const response = await api.get<PaginatedResponse<Action>>(`/actions?${params}`);
-    return handleApiResponse(response);
+    const data = handleApiResponse(response);
+    return {
+      actions: Array.isArray(data.actions) ? data.actions : Array.isArray(data.data) ? data.data : [],
+      pagination: data.pagination
+    };
   },
 
   // Get action by ID
@@ -286,7 +304,11 @@ export const adminAPI = {
     if (filters.status) params.append('status', filters.status);
 
     const response = await api.get<PaginatedResponse<User>>(`/admin/users?${params}`);
-    return handleApiResponse(response);
+    const data = handleApiResponse(response);
+    return {
+      users: Array.isArray(data.users) ? data.users : Array.isArray(data.data) ? data.data : [],
+      pagination: data.pagination
+    };
   },
 
   // Get user details
@@ -322,7 +344,11 @@ export const adminAPI = {
     if (filters.verified && filters.verified !== 'all') params.append('verified', filters.verified);
 
     const response = await api.get<PaginatedResponse<Action>>(`/admin/actions?${params}`);
-    return handleApiResponse(response);
+    const data = handleApiResponse(response);
+    return {
+      actions: Array.isArray(data.actions) ? data.actions : Array.isArray(data.data) ? data.data : [],
+      pagination: data.pagination
+    };
   },
 
   // Verify action

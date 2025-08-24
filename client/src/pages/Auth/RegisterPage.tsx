@@ -8,7 +8,7 @@ import {
   Container,
   Button,
 } from '@mui/material';
-import { EcoOutlined } from '@mui/icons-material';
+import { Co2Outlined } from '@mui/icons-material';
 
 const RegisterPage: React.FC = () => {
   return (
@@ -38,10 +38,10 @@ const RegisterPage: React.FC = () => {
                 mb: 2,
               }}
             >
-              <EcoOutlined sx={{ fontSize: 30, color: 'white' }} />
+              <Co2Outlined sx={{ fontSize: 30, color: 'white' }} />
             </Box>
             <Typography variant="h4" fontWeight="600" color="primary" gutterBottom>
-              EcoImpact
+              EcoSnap
             </Typography>
             <Typography variant="h6" gutterBottom>
               Registration Coming Soon!
